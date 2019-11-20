@@ -1,12 +1,8 @@
-const cmd = /^s\/(?<search>\w+)\/(?<replace>\w+)\/(?<flag>p|g)?$/
+const cmd = /^s\/(?<search>[\w| ]+)\/(?<replace>[\w| ]+)\/(?<flag>p|g)?$/
 
 class regexval {
-	static check(string) {
-		return cmd.test(string)
-	}
-
 	static exec(string) {
-		if (this.check(string)) {
+		if (cmd.test(string)) {
 			const grps = cmd.exec(string).groups
 
 			return {
@@ -15,6 +11,8 @@ class regexval {
 				flag: grps.flag
 			}
 		} else {
+			console.log(`Invalid command ${string}`)
+			process.exit()
 			return {}
 		}
 	}

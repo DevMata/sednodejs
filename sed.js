@@ -1,6 +1,7 @@
-const fs = require('fs')
 const yargs = require('yargs')
 const regexval = require('./regexval')
+const filehandler = require('./filehandler')
+const formater = require('./formater')
 
 yargs.boolean('n')
 yargs.boolean('i')
@@ -11,39 +12,51 @@ const f = yargs.argv.f
 const n = yargs.argv.n
 const i = yargs.argv.i
 
-// console.log(_, e, f, n, i)
+let j = 0
+let cmd = []
+let file = []
 
-let cmd = ''
-let file = ''
-
-if (!e) {
-	cmd = _[0]
-	file = _[1]
+if (e) {
+	if (typeof e == 'string') {
+		cmd.push(regexval.exec(e))
+	} else {
+		for (let c of e) {
+			cmd.push(regexval.exec(c))
+		}
+	}
 } else {
-	for (let cmd of e) {
-		console.log(regexval.check(cmd))
+	cmd.push(regexval.exec(_[j]))
+	j += 1
+}
+
+if (f) {
+	if (typeof f == 'string') {
+		for (let c of filehandler.read(f)) {
+			cmd.push(regexval.exec(c))
+		}
+	} else {
+		for (let file of f) {
+			for (let c of filehandler.read(file)) {
+				cmd.push(regexval.exec(c))
+			}
+		}
 	}
 }
 
-let stream = ''
-let res = []
-let resStream = ''
+for (let line of filehandler.read(_[j])) {
+	file.push(line)
+}
 
-fs.access(file, (err, data) => {
-	if (err) {
-		console.log("File doesn't exists")
-		process.exit()
+console.log(cmd)
+
+for (let line of file) {
+	let l = line
+	for (let c of cmd) {
+		l = formater.processln(l, c, n)
 	}
+	console.log(l)
+}
 
-	fs.readFile(file, 'utf-8', (err, data) => {
-		if (err) {
-			console.log('Error at open file')
-			process.exit()
-		}
-
-		stream += data
-		res = stream.split('\r')
-
-		console.log(res)
-	})
-})
+// let stream = ''
+// let res = []
+// let resStream = ''

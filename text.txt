@@ -1,4 +1,4 @@
 hola mundo hola mundo
-adiós mundo
+hasta luego mundo
 hola mundo
 fin archivo
