@@ -11,19 +11,31 @@ const f = yargs.argv.f
 const n = yargs.argv.n
 const i = yargs.argv.i
 
-console.log(_, e, f, n, i)
+// console.log(_, e, f, n, i)
+
+let cmd = ''
+let file = ''
+
+if (!e) {
+	cmd = _[0]
+	file = _[1]
+} else {
+	for (let cmd of e) {
+		console.log(regexval.check(cmd))
+	}
+}
 
 let stream = ''
 let res = []
 let resStream = ''
 
-fs.access(_[1], (err, data) => {
+fs.access(file, (err, data) => {
 	if (err) {
-		console.log("FILE DOESN'T EXISTS")
+		console.log("File doesn't exists")
 		process.exit()
 	}
 
-	fs.readFile(_[1], 'utf-8', (err, data) => {
+	fs.readFile(file, 'utf-8', (err, data) => {
 		if (err) {
 			console.log('Error at open file')
 			process.exit()
@@ -31,7 +43,7 @@ fs.access(_[1], (err, data) => {
 
 		stream += data
 		res = stream.split('\r')
+
+		console.log(res)
 	})
 })
-
-console.log(regexval.check(_[0]))

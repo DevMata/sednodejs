@@ -5,7 +5,7 @@ class regexval {
 		return cmd.test(string)
 	}
 
-	static validate(string) {
+	static exec(string) {
 		if (this.check(string)) {
 			const grps = cmd.exec(string).groups
 
