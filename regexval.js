@@ -1,8 +1,9 @@
 const cmd = /^s\/(?<search>[\w| ]+)\/(?<replace>[\w| ]+)\/(?<flag>p|g)?$/
-const file = /^\w+\.\w+$/
+const file = /^(?<name>\w+)\.\w+$/
+const extension = /^\.\w+/
 
 class regexval {
-	static exec(string) {
+	static processcmd(string) {
 		if (cmd.test(string)) {
 			const grps = cmd.exec(string).groups
 
@@ -24,6 +25,14 @@ class regexval {
 
 	static checkfile(string) {
 		return file.test(string)
+	}
+
+	static checkext(string) {
+		return extension.test(string)
+	}
+
+	static getFileName(string) {
+		return file.exec(string).groups.name
 	}
 }
 
