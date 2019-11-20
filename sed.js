@@ -19,7 +19,7 @@ for (let obj of _) {
 		if (_.indexOf(obj) == 0) {
 			cmd.push(regexval.processcmd(obj))
 		} else {
-			console.log('Error. Use -e for more than one cmd')
+			console.log('Error. Use -e for many commands')
 			process.exit()
 		}
 	} else if (regexval.checkfile(obj)) {
@@ -62,9 +62,10 @@ for (let file of F) {
 	for (let line of arrayContent) {
 		let l = line
 		for (let c of cmd) {
-			l = formater.processln(l, c, n)
+			l = formater.process(l.replace(/\n$/, ''), c, n)
 		}
-		stream += l + '\n'
+		// stream += l === '' ? '' : l + '\n'
+		stream += l
 	}
 
 	if (i) {
@@ -75,6 +76,6 @@ for (let file of F) {
 			filehandler.write(file, stream)
 		}
 	} else {
-		console.log(stream)
+		console.log(stream.trim())
 	}
 }
