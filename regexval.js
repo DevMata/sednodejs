@@ -1,4 +1,5 @@
 const cmd = /^s\/(?<search>[\w| ]+)\/(?<replace>[\w| ]+)\/(?<flag>p|g)?$/
+const file = /^\w+\.\w+$/
 
 class regexval {
 	static exec(string) {
@@ -15,6 +16,14 @@ class regexval {
 			process.exit()
 			return {}
 		}
+	}
+
+	static checkcmd(string) {
+		return cmd.test(string)
+	}
+
+	static checkfile(string) {
+		return file.test(string)
 	}
 }
 

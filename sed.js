@@ -12,9 +12,24 @@ const f = yargs.argv.f
 const n = yargs.argv.n
 const i = yargs.argv.i
 
-let j = 0
+let j = false
 let cmd = []
 let file = []
+
+for (let obj of _) {
+	if (regexval.checkcmd(obj)) {
+		if (_.indexOf(obj) == 0) {
+			cmd.push(regexval.exec(obj))
+		} else {
+			console.log('Error. Use -e for more than one cmd')
+			process.exit()
+		}
+	} else {
+		for (let line of filehandler.read(obj)) {
+			file.push(line)
+		}
+	}
+}
 
 if (e) {
 	if (typeof e == 'string') {
@@ -24,9 +39,6 @@ if (e) {
 			cmd.push(regexval.exec(c))
 		}
 	}
-} else {
-	cmd.push(regexval.exec(_[j]))
-	j += 1
 }
 
 if (f) {
@@ -43,12 +55,6 @@ if (f) {
 	}
 }
 
-for (let line of filehandler.read(_[j])) {
-	file.push(line)
-}
-
-console.log(cmd)
-
 for (let line of file) {
 	let l = line
 	for (let c of cmd) {
@@ -56,7 +62,3 @@ for (let line of file) {
 	}
 	console.log(l)
 }
-
-// let stream = ''
-// let res = []
-// let resStream = ''
