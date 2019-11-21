@@ -6,7 +6,7 @@ class formater {
 			}
 
 			if (args.flag === 'p') {
-				return this.processln(line, args, n) + this.processlnp(line, args)
+				return this.processlnp(line, args) + this.processln(line, args, n)
 			}
 		} else {
 			return this.processln(line, args, n)

@@ -12,7 +12,7 @@ const n = yargs.argv.n
 const i = yargs.argv.i
 
 let cmd = []
-let F = []
+let files = []
 
 for (let obj of _) {
 	if (regexval.checkcmd(obj)) {
@@ -23,11 +23,13 @@ for (let obj of _) {
 			process.exit()
 		}
 	} else if (regexval.checkfile(obj)) {
-		// for (let line of filehandler.read(obj)) {
-		// 	file.push(line)
-		// }
-		F.push(obj)
+		files.push(obj)
 	}
+}
+
+if (!files.length) {
+	console.log("Files don't provided")
+	process.exit()
 }
 
 if (e) {
@@ -54,7 +56,7 @@ if (f) {
 	}
 }
 
-for (let file of F) {
+for (let file of files) {
 	let stream = ''
 	let content = filehandler.read(file)
 	let arrayContent = filehandler.arrayify(content)
@@ -64,7 +66,6 @@ for (let file of F) {
 		for (let c of cmd) {
 			l = formater.process(l.replace(/\n$/, ''), c, n)
 		}
-		// stream += l === '' ? '' : l + '\n'
 		stream += l
 	}
 
