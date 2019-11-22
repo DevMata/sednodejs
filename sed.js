@@ -1,7 +1,7 @@
 const yargs = require('yargs')
-const regexval = require('./regexval')
-const filehandler = require('./filehandler')
-const formater = require('./formater')
+const regexval = require('./src/regexval')
+const filehandler = require('./src/filehandler')
+const formater = require('./src/formater')
 
 yargs.boolean('n')
 
@@ -11,13 +11,13 @@ const f = yargs.argv.f
 const n = yargs.argv.n
 const i = yargs.argv.i
 
-let cmd = []
+let commands = []
 let files = []
 
 for (let obj of _) {
 	if (regexval.checkcmd(obj)) {
 		if (_.indexOf(obj) == 0) {
-			cmd.push(regexval.processcmd(obj))
+			commands.push(regexval.processcmd(obj))
 		} else {
 			console.log('Error. Use -e for many commands')
 			process.exit()
@@ -34,49 +34,53 @@ if (!files.length) {
 
 if (e) {
 	if (typeof e == 'string') {
-		cmd.push(regexval.processcmd(e))
+		commands.push(regexval.processcmd(e))
 	} else {
-		for (let c of e) {
-			cmd.push(regexval.processcmd(c))
+		for (let command of e) {
+			commands.push(regexval.processcmd(command))
 		}
 	}
 }
 
 if (f) {
 	if (typeof f == 'string') {
-		for (let c of filehandler.arrayify(filehandler.read(f))) {
-			cmd.push(regexval.processcmd(c))
+		for (let command of filehandler.arrayify(filehandler.read(f))) {
+			commands.push(regexval.processcmd(command))
 		}
 	} else {
 		for (let file of f) {
-			for (let c of filehandler.arrayify(filehandler.read(file))) {
-				cmd.push(regexval.processcmd(c))
+			for (let command of filehandler.arrayify(filehandler.read(file))) {
+				commands.push(regexval.processcmd(command))
 			}
 		}
 	}
 }
 
 for (let file of files) {
-	let stream = ''
+	let processedContent = ''
 	let content = filehandler.read(file)
 	let arrayContent = filehandler.arrayify(content)
 
 	for (let line of arrayContent) {
 		let l = line
-		for (let c of cmd) {
-			l = formater.process(l.replace(/\n$/, ''), c, n)
+
+		for (let command of commands) {
+			l = formater.process(l.replace(/\n+$/, ''), command, n)
 		}
-		stream += l
+		processedContent += l
 	}
 
 	if (i) {
 		if (typeof i === 'boolean') {
-			filehandler.write(file, stream)
-		} else {
+			filehandler.write(file, processedContent)
+		} else if (typeof i === 'string') {
 			filehandler.write(regexval.getFileName(file) + i, content)
-			filehandler.write(file, stream)
+			filehandler.write(file, processedContent)
+		} else {
+			console.log("You don't need many extensions")
+			process.exit()
 		}
 	} else {
-		console.log(stream.trim())
+		console.log(processedContent)
 	}
 }
